@@ -16,7 +16,7 @@ pipeline {
 
         stage('Build Maven') {
             steps {
-                        bat 'mvn.cmd  clean install'
+                        bat 'call mvn.cmd  clean install'
             }
         }
 
@@ -24,7 +24,7 @@ pipeline {
         stage('Test Maven') {
             steps {
             //    sh 'mvn test'
-                bat 'mvn.cmd test'
+                bat 'call mvn.cmd test'
             }
         }
 

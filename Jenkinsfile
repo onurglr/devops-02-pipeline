@@ -16,8 +16,10 @@ pipeline {
 
         stage('Build Maven') {
             steps {
-            //    sh 'mvn clean install'
-                bat 'mvn clean install'
+              timeout(time: 1, unit: 'MINUTES') {
+                        bat 'mvn -X clean install'
+                    }
+
             }
         }
 

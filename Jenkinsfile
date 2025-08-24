@@ -15,7 +15,7 @@ pipeline {
         }
         stage('Test bat') {
     steps {
-        bat 'echo Hello from Jenkins'
+        bat ' Hello from Jenkins'
     }
 }
 

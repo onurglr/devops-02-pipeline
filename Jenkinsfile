@@ -13,6 +13,11 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/onurglr/devops-02-pipeline']])
             }
         }
+        stage('Test bat') {
+    steps {
+        bat 'echo Hello from Jenkins'
+    }
+}
 
         stage('Build Maven') {
             steps {

@@ -2,88 +2,47 @@ pipeline {
     agent any
 
     tools {
+        // Install the Maven version configured as "M3" and add it to the path.
         maven 'Maven3'
-        jdk 'jdk17'
+        jdk 'Java17'
     }
 
     stages {
-
-       stage('SCM GitHub') {
+        stage('SGM Github') {
             steps {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/onurglr/devops-02-pipeline']])
             }
         }
-        stage('Test bat') {
-    steps {
-        bat ' echo Hello from Jenkins'
-    }
-}
-
         stage('Build Maven') {
             steps {
-                        bat 'mvn  clean install'
+                bat 'mvn clean install'
             }
         }
-
-
         stage('Test Maven') {
             steps {
-            //    sh 'mvn test'
                 bat 'mvn test'
             }
         }
-
-
         stage('Docker Image') {
             steps {
-            //    sh 'docker build  -t mimaraslan/devops-application:latest   .'
-                bat 'docker build  -t onurguler18/devops-application:latest   .'
-            }
-        }
-
-
-        stage('Docker Image To DockerHub') {
-            steps {
                 script {
-                    withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhub')]) {
-
+                    withCredentials([string(credentialsId: 'dockerhub_token', variable: 'dockerhub')]) {
                         if (isUnix()) {
-                             sh 'docker login -u onurguler18 -p %dockerhub%'
-                             sh 'docker push onurguler18/devops-application:latest'
-                          } else {
-                             bat 'docker login -u onurguler18 -p %dockerhub%'
-                             bat 'docker push onurguler18/devops-application:latest'
-                         }
+                            sh   'docker login -u onurguler18 -p %dockerhub%'
+                            sh 'docker push onurguler18/devops-application:latest'
+                         }else {
+                            bat   'docker login -u onurguler18 -p %dockerhub%'
+                            bat 'docker push onurguler18/devops-application:latest'
+                        }
                     }
                 }
             }
         }
-    
-
-
 
         stage('Deploy Kubernetes') {
             steps {
-            script {
-                    kubernetesDeploy (configs: 'deployment-service.yaml', kubeconfigId: 'kubernetes')
-                }
+                kubernetesDeploy (configs: 'deployment-service.yaml', kubeconfigId: 'kubernetes')
             }
         }
-
-
-        stage('Docker Image to Clean') {
-            steps {
-              
-                   //  sh 'docker image prune -f'
-                     bat 'docker image prune -f'
-               
-            }
-        }
-
-
-
     }
-
 }
-
-

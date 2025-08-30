@@ -41,24 +41,15 @@ pipeline {
 
         stage('Deploy Kubernetes') {
             steps {
-                kubernetesDeploy (configs: 'deployment-service.yaml', kubeconfigId: 'kubernetes')
+                kubernetesDeploy(configs: 'deployment-service.yaml', kubeconfigId: 'kubernetes')
             }
         }
 
-          stage('Docker  Image Clean') {
+        stage('Docker  Image Clean') {
             steps {
-                if (isUnix()) {
-                           
-                            sh 'docker image prune -f'
-                         }else {
-                          
-                            bat 'docker image prune -f'
-                        }
-               
+                bat 'docker image prune -f'
             }
         }
-
-
 
     }
 }
